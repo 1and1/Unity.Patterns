@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Unity.Patterns</id>
+		<version>$version$</version>
+		<authors>Bastian Eicher</authors>
+		<copyright>1&amp;1 Internet SE</copyright>
+		<projectUrl>https://github.com/1and1/Unity.Patterns</projectUrl>
+		<description>Unity.Patterns provides extensions for Unity dependency injection framework. The main focus is on Registration by Convention and the Decorator pattern.</description>
+		<summary>Extensions for Unity DI framework: Registration by Convention and Decorator pattern</summary>
+		<tags>Unity dependency injection patterns</tags>
+	</metadata>
+</package>
