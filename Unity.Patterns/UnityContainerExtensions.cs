@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using System.Security;
 using Microsoft.Practices.Unity;
 
 namespace Unity.Patterns
@@ -44,6 +46,39 @@ namespace Unity.Patterns
                 container.RegisterType(typeof(TInterface), type, (getLifetimeManager ?? WithLifetime.Hierarchical)(type));
 
             return container;
+        }
+
+        /// <summary>
+        /// Resolve an instance of the default requested type from the container.
+        /// When resolution fails throws the original (inner) exception instead of <see cref="ResolutionFailedException"/>.
+        /// </summary>
+        public static T ResolveUnwrapped<T>(this IUnityContainer container)
+        {
+            try
+            {
+                return container.Resolve<T>();
+            }
+            catch (ResolutionFailedException ex)
+            {
+                var exception = ex.InnerException;
+
+                // Try to preserve original stack trace
+                var serializationInfo = new SerializationInfo(exception.GetType(), new FormatterConverter());
+                var streamingContext = new StreamingContext(StreamingContextStates.CrossAppDomain);
+                exception.GetObjectData(serializationInfo, streamingContext);
+                try
+                {
+                    var objectManager = new ObjectManager(null, streamingContext);
+                    objectManager.RegisterObject(exception, 1, serializationInfo);
+                    objectManager.DoFixups();
+                }
+                catch (SecurityException)
+                {}
+                catch (SerializationException)
+                {}
+
+                throw exception;
+            }
         }
     }
 }
